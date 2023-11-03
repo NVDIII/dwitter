@@ -11,7 +11,7 @@ const router = express.Router();
 //         return next();
 //     }
 //     return res.status(400).json({ message: errors.array()[0].msg });
-// }
+// } 
 
 const validateTweet = [
     body('text').trim().isLength({min:3}).withMessage('최소 3자리 이상 입력!'), validate

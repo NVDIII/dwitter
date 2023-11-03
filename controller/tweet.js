@@ -44,4 +44,4 @@ export async function deleteTweet(req, res, next){
     const id = req.params.id
     await tweetRepository.remove(id)
     res.sendStatus(204)
-}
+} 

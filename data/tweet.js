@@ -15,7 +15,7 @@ let tweets = [
         username: 'banana',
         url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrYEhHx-OXQF1NqVRXPL8R50ggKje3hQTvIA&usqp=CAU'
     }
-];
+]; 
 
 export async function getAll() {
     return tweets
