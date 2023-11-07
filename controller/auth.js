@@ -1,11 +1,15 @@
 import * as authRepository from '../data/auth.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import * as userRepository from '../data/auth.js';
+import { config } from '../config.js';
 
 //signup
-export async function signup(req, res, next){
-    const {id, username, password, name, email, url} = req.body;
-    const user = await authRepository.signup(id, username, password, name, email, url)
-    res.status(201).json(user)
-}
+// export async function signup(req, res, next){
+//     const {id, username, password, name, email, url} = req.body;
+//     const user = await authRepository.signup(id, username, password, name, email, url)
+//     res.status(201).json(user)
+// }
 
 //login// import * as authRepository from '../data/auth.js';
 
@@ -28,14 +32,12 @@ export async function signup(req, res, next){
 // }
 
 // 강사님 답
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-import * as userRepository from '../data/auth.js';
+
 
 // 설정파일로 적용할 예정
-const jwtSecretKey = 'abcdef!@#$%^&*()';
-const jwtExpiresInDays = '2d'; // 이틀이 지나가게 된다
-const bcryptSaltRounds = 12;
+// const jwtSecretKey = 'abcdef!@$%^&*()';
+// const jwtExpiresInDays = '2d'; // 이틀이 지나가게 된다
+// const bcryptSaltRounds = 12;
 
 export async function signup(req, res) {
     const { username, password, name, email, url } = req.body;
@@ -44,7 +46,7 @@ export async function signup(req, res) {
         return res.status(409).json({ message: `${username}이 이미 가입되었음`});
     }
 
-    const hashed = await bcrypt.hash(password, bcryptSaltRounds);
+    const hashed = await bcrypt.hash(password, config.bcrypt.saltRounds);
     const userId = await userRepository.createUser({
         username,
         password: hashed,
@@ -74,7 +76,7 @@ export async function login(req, res) {
 }
 
 function createJwtToken(id) {
-    return jwt.sign({ id }, jwtSecretKey, { expiresIn: jwtExpiresInDays});
+    return jwt.sign({ id }, config.jwt.secretkey, { expiresIn: config.jwt.expiresInSec});
 }
 
 export async function me(req, res, next) {
