@@ -33,18 +33,18 @@ export async function updateTweet(req, res, next){
     const id = req.params.id
     const text = req.body.text
     const tweet = await tweetRepository.getById(id)
-    if(!tweet) {
+    if(!tweet){
         res.status(404).json({message: `Tweet id(${id}) not found`})
     }
-    if (tweet.userId !== req.userId) {
-        return res. sendStatus(403)
+    if(tweet.userId !== req.userId){
+        return res.sendStatus(403)
     }
-    const updated = await tweetRepository.remove(id, text)
-    res.sendStatus(200).json(tweet)
+    const update = await tweetRepository.update(id, text)
+    res.status(200).json(update)
 }
 
 // deleteTweet
-export async function deleteTweet(req, res, next){
+export async function deleteTweet(req, res){
     const id = req.params.id
     const tweet = await tweetRepository.getById(id)
     if(!tweet) {

@@ -1,4 +1,36 @@
-import {db} from '../DB/database.js';
+import SQ from "sequelize";
+import {sequelize} from '../DB/database.js';
+const DataTypes = SQ.DataTypes; // sequelize 용 데이터타입을 쓴다.
+
+export const User = sequelize.define(
+    'user',
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            allowNull: false,
+            primaryKey: true
+        },
+        username: {
+            type: DataTypes.STRING(45),
+            allowNull: false
+        },
+        password: {
+            type:DataTypes.STRING(128),
+            allownull: false
+        },
+        name: {
+            type: DataTypes.STRING(128),
+            allow: false
+        },
+        email: {
+            type: DataTypes.STRING(128),
+            allowNull: false
+        },
+        url: DataTypes.TEXT
+    },
+    {timestamps: false} // timestamps: 증가되는 시간값
+) // table 생성코드
 
 // let users = [
 //     {
@@ -42,13 +74,14 @@ import {db} from '../DB/database.js';
 // 강사님 답
 export async function findByUsername(username) {
     // return users.find((user) => user.username === username);
-    return db.execute('SELECT * FROM users WHERE username=?', [username]).then((result) => result[0][0]);
-    
+    // return db.execute('SELECT * FROM users WHERE username=?', [username]).then((result) => result[0][0]);
+    return User.findOne({ where: { username }});
 }
 
 export async function findById(id) {
     // return users.find((user) => user.id === id);
-    return db.execute('SELECT * FROM users WHERE id=?', [id]).then((result) => result[0][0]);
+    // return db.execute('SELECT * FROM users WHERE id=?', [id]).then((result) => result[0][0]);
+    return User.findByPk(id); //Pk: Primary Key
 }
 
 // export async function createUser(user) {
@@ -60,9 +93,11 @@ export async function findById(id) {
 // }
 
 export async function createUser(user){
-    const {username, password, name, email, url} = user;
-    return db.execute('INSERT INTO users (username, password, name, email, url) VALUES (?,?,?,?,?)',
-    [username, password, name, email, url]).then((result)=>result[0].insertId)
+    // const {username, password, name, email, url} = user;
+    // return db.execute('INSERT INTO users (username, password, name, email, url) VALUES (?,?,?,?,?)',
+    // [username, password, name, email, url]).then((result)=>result[0].insertId)
+
+    return User.create(user).then((data) => data.dataValues.id);
 }
 
 // export async function signup(id, username, password, name, email, url){
