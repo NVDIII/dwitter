@@ -10,27 +10,18 @@ import {initSocket} from "./connection/socket.js"
 
 // console.log(process.env.JWT_SECRET);
 const app = express();
-
 app.use(express.json());
 app.use(morgan("dev"));
 app.use(cors());
 
 // 라우터
 app.use('/tweets', tweetsRouter)
-// app.use('/tweets', authRouter)
-
-// app.use('/tweets', authRouter)
-
-//강사님 답
 app.use('/auth', authRouter)
-
-
 app.use((req, res, next) => {
     res.sendStatus(404);
 });
 
-const server = app.listen(config.host.port);
-initSocket(server);
-
-
-// app.listen(config.host.port); 
+connectDB().then(db=>{
+    const server=app.listen(config.host.port)
+    initSocket(server)
+}).catch(console.error)
