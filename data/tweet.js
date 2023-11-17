@@ -1,7 +1,6 @@
 import MongoDb from 'mongodb';
 import { getTweets } from '../DB/database.js';
 import * as UserRepository from './auth.js';
-const ObjectID = MongoDb.ObjectId;
 
 
 // import { db } from '../db/database.js';
@@ -13,33 +12,6 @@ export async function getAll() {
         .toArray()
         .then(mapTweets);
 }
-export async function getAllByUsername(username) {
-    return getTweets()
-        .find({ username })
-        .sort({ createAt: -1 })
-        .toArray()
-        .then(mapTweets);
-}
-export async function getById(id) {
-    return getTweets()
-        .find( {_id: new ObjectID(id)})
-        .next()
-        .then(mapOptionalTweet);
-}
-export async function create(text, userId) {
-    return UserRepository.findById(userId)
-        .then((user) => {
-            getTweets().insertOne({
-                text,
-                createdAt: new Date(),
-                userId,
-                name: user.name,
-                username: user.username,
-                url: user.url
-            })
-        })
-        .then((result) => result)
-        .then(mapOptionalTweet);
 
 }
 export async function update(username, text) {
@@ -49,11 +21,16 @@ export async function update(username, text) {
                 text,
                 createdAt: new Date(),
                 name: user.name,
-                username
-            })
-        })
-        .then((result) => result)
-        .then(mapOptionalTweet);
+            username: user.username,
+            url:user.url
+        }).save()
+    );
+}
+
+export async function update(id, text) {
+    return Tweet.findByIdAndUpdate(id, {text}, {
+        returnDocument: "after"
+    })
 }
 export async function remove(id) {
     return db.execute('DELETE FROM tweets WHERE id=?', [id]);
