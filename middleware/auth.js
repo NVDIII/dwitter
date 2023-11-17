@@ -14,8 +14,10 @@ export const isAuth = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     jwt.verify(
-        token, config.jwt.secretkey, async (error, decoded) => {
+        token, config.jwt.secretKey, async (error, decoded) => {
             if (error) {
+                console.log('hi2');
+
                 return res.status(401).json(AUTH_ERROR);
             }
 
